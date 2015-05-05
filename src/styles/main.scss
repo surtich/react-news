@@ -1,0 +1,20 @@
+/* Reset
+====================================== */
+
+@import 'normalize';
+
+* {
+    hyphens: auto;
+    -ms-word-wrap: break-word;
+    word-wrap: break-word;
+}
+
+*,*:before, *:after {
+    box-sizing: border-box;
+}
+
+// responsive wrapper
+
+.full-height {
+    height: 100% !important;
+}

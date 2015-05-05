@@ -1,0 +1,37 @@
+{
+  "name": "react-news",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "node_modules/.bin/gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/IGZJavierPerez/react-news.git"
+  },
+  "author": "surtich@gmail.com",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/IGZJavierPerez/react-news/issues"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "~3.8.11",
+    "browserify": "~9.0.8",
+    "del": "~1.1.1",
+    "gulp-eslint": "~0.11.1",
+    "react": "~0.13.2",
+    "react-router": "~0.13.2",
+    "vinyl-source-stream": "~1.1.0",
+    "reactify": "~1.1.0",
+    "gulp-load-plugins": "~0.10.0",
+    "gulp-util": "~3.0.4",
+    "gulp-useref": "~1.1.2",
+    "gulp-size": "~1.2.1",
+    "watchify": "~3.2.1",
+    "gulp-notify": "~2.2.0",
+    "gulp-webserver": "~0.9.1",
+    "gulp-ruby-sass": "~1.0.5",
+    "gulp-autoprefixer": "~2.2.0",
+    "run-sequence": "~1.1.0"
+  }
+}
