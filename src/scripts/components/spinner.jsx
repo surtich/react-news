@@ -1,5 +1,3 @@
-'use strict';
-
 var Spinner = React.createClass({
     render: function() {
         var bars = [];

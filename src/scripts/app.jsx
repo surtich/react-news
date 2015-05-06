@@ -17,13 +17,17 @@ var Login         = require('./components/login');
 var Register      = require('./components/register');
 
 var Posts         = require('./views/posts');
+var Profile       = require('./views/profile');
 
 var actions       = require('./actions/actions');
+
+var config        = require('./../util/config');
 /* eslint-enable */
 
 var ReactNews = React.createClass({
 
     mixins: [
+        Reflux.listenTo(userStore, 'onStoreUpdate'),
         Reflux.listenTo(actions.showOverlay, 'showOverlay')
     ],
 
@@ -115,12 +119,18 @@ var ReactNews = React.createClass({
         });
     },
 
-    render: function() {
+    onStoreUpdate: function(user) {
+        this.setState({
+            user: user,
+            showOverlay: false
+        });
+    },
 
+    render: function() {
         var user = this.state.user;
         var username = user ? user.profile.username : '';
         var md5hash = user ? user.profile.md5hash : '';
-        var gravatarURI = 'http://www.gravatar.com/avatar/' + md5hash + '?d=mm';
+        var gravatarURI = config.app.gravatarURI + md5hash + '?d=mm';
 
         var postError = this.state.postError;
 
@@ -206,6 +216,7 @@ var routes = (
     <Route handler={ ReactNews }>
         <DefaultRoute name="home" handler={ Posts } />
         <Route name="posts" path="/posts/:pageNum" handler={ Posts } ignoreScrollBehavior />
+        <Route name="profile" path="user/:username" handler={ Profile } />
     </Route>
 );
 

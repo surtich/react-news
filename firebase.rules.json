@@ -1,0 +1,12 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+    "posts": {
+      ".indexOn": [ "time", "upvotes", "commentCount" ]
+    },
+    "users": {
+      ".indexOn": [ "username" ]
+    }
+  }
+}

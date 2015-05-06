@@ -1,5 +1,16 @@
+var Reflux = require('reflux');
+
+var actions = require('../actions/actions');
+
+var loginStore = require('../stores/loginStore');
+
+var Spinner    = require('../components/spinner');
 
 var Register = React.createClass({
+
+    mixins: [
+        Reflux.listenTo(loginStore, 'onErrorMessage')
+    ],
 
     getInitialState: function() {
         return {
@@ -8,12 +19,36 @@ var Register = React.createClass({
         };
     },
 
+    onErrorMessage: function(errorMessage) {
+        this.refs.submit.getDOMNode().disabled = false;
+        this.setState({
+            error: errorMessage,
+            submitted: false
+        });
+    },
+
+    registerUser: function(e) {
+        e.preventDefault();
+
+        this.refs.submit.getDOMNode().disabled = true;
+        this.setState({
+            submitted: true
+        });
+
+        var loginData = {
+            email: this.refs.email.getDOMNode().value.trim(),
+            password: this.refs.password.getDOMNode().value.trim()
+        };
+        var username = this.refs.username.getDOMNode().value.trim();
+        actions.register(username, loginData);
+    },
+
     render: function() {
         var error = this.state.error ? <div className="error login-error">{ this.state.error }</div> : '';
 
         return (
             <div className="login md-modal text-center" id="overlay-content">
-                <form className="login-form text-left">
+                <form onSubmit={ this.registerUser } className="login-form text-left">
                     <h1>Register</h1>
                     <label htmlFor="username">Username</label><br />
                     <input type="text" placeholder="Username" id="username" ref="username" /><br />
