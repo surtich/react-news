@@ -15,6 +15,8 @@ var cx            = require('classnames');
 var Login         = require('./components/login');
 
 var Posts         = require('./views/posts');
+
+var actions       = require('./actions/actions');
 /* eslint-enable */
 
 var ReactNews = React.createClass({
@@ -32,6 +34,44 @@ var ReactNews = React.createClass({
         this.setState({
             showPanel: !this.state.showPanel
         });
+    },
+
+    submitPost: function(e) {
+        e.preventDefault();
+
+        var titleEl = this.refs.title.getDOMNode();
+        var linkEl = this.refs.link.getDOMNode();
+
+        var user = this.state.user;
+
+        if (titleEl.value.trim() === '') {
+            this.setState({
+                'postError': 'title_error'
+            });
+            return;
+        }
+
+        if (linkEl.value.trim() === '') {
+            this.setState({
+                'postError': 'link_error'
+            });
+            return;
+        }
+
+        var post = {
+            title: titleEl.value.trim(),
+            url: linkEl.value.trim(),
+            creator: user.profile.username,
+            creatorUID: user.uid,
+            time: Date.now()
+        };
+
+        actions.submitPost(post);
+
+        titleEl.value = '';
+        linkEl.value = '';
+
+        this.togglePanel();
     },
 
     render: function() {
@@ -104,7 +144,7 @@ var ReactNews = React.createClass({
                         </div>
                     </div>
                     <div id="header-panel" className="header-panel text-center">
-                        <form className="panel-form">
+                        <form onSubmit={ this.submitPost } className="panel-form">
                             <input type="text" className={ titleInputCx } placeholder="Title" ref="title" />
                             <input type="url" className={ linkInputCx } placeholder="Link" ref="link" />
                             <button type="submit" className="button panel-button button-outline">Submit</button>
