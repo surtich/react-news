@@ -100,10 +100,6 @@ actions.login.listen(function(user, username) {
                 var email = authData.password.email;
                 actions.createProfile(userId, username, email);
             } else {
-                // returning user
-                usersRef.child(userId).on('value', function(profile) {
-                    actions.updateProfile(userId, profile.val());
-                });
             }
         } 
     });
@@ -132,6 +128,12 @@ ref.onAuth(function(authData) {
         // logging out
         usersRef.off();
         actions.logout.completed();
+    } else {
+        // returning user
+        var userId = authData.uid;
+        usersRef.child(userId).on('value', function(profile) {
+            actions.updateProfile(userId, profile.val());
+        });
     }
 });
 
