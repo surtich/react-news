@@ -16,3 +16,12 @@ npm start
 ```
 
 Navigate to [http://localhost:8080](http://localhost:8080)
+
+
+### To depliy to Firebase
+
+Modify [firebase.json](./firebase.json) and execute
+
+```bash
+npm run deploy
+```

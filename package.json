@@ -2,7 +2,8 @@
   "name": "react-news",
   "version": "0.0.0",
   "scripts": {
-    "start": "node_modules/.bin/gulp"
+    "start": "node_modules/.bin/gulp",
+    "deploy": "node_modules/.bin/gulp dist && node_modules/.bin/firebase deploy && node_modules/.bin/firebase open"
   },
   "repository": {
     "type": "git",

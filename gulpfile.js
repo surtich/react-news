@@ -56,7 +56,6 @@ gulp.task('scripts', function() {
         fullPaths: true
     });
 
-    bundler = watchify(bundler);
 
     function rebundle() {
         console.log('Bundling Scripts...'); //eslint-disable-line no-console
@@ -71,7 +70,10 @@ gulp.task('scripts', function() {
             }));
     }
 
-    bundler.on('update', rebundle);
+    if (this.seq.indexOf('dist') === -1) {
+        bundler = watchify(bundler);
+        bundler.on('update', rebundle);
+    }
 
     return rebundle();
 });
@@ -82,7 +84,16 @@ gulp.task('html', function() {
         .pipe($.useref())
         .pipe(gulp.dest('dist'))
         .pipe($.size());
+
 });
+
+// Favicon
+gulp.task('favicon', function() {
+    return gulp.src('src/favicon.ico')
+        .pipe(gulp.dest('dist'));
+
+});
+
 
 // Libs
 gulp.task('libs', function() {
@@ -137,12 +148,18 @@ gulp.task('watch', function() {
 });
 
 // Default task
-gulp.task('dist', ['clean', 'libs', 'html', 'styles', 'lint', 'scripts']);
+gulp.task('dist', function(callback) {
+    runSequence(
+        'clean',
+        ['libs', 'html', 'favicon', 'styles', 'lint', 'scripts'],
+        callback
+    );
+});
 
 // Watch
 gulp.task('default', function(callback) {
     runSequence(
-        ['libs', 'html', 'styles', 'lint', 'scripts'],
+        ['libs', 'html', 'favicon', 'styles', 'lint', 'scripts'],
         'watch',
         'serve',
         callback
