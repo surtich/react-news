@@ -1,6 +1,7 @@
-window.React = require('react/addons');
-
 /* eslint-disable no-multi-spaces */
+window.React      = require('react/addons');
+var Reflux        = require('reflux');
+
 var Router        = require('react-router');
 var RouteHandler  = Router.RouteHandler;
 var Route         = Router.Route;
@@ -13,6 +14,7 @@ var userStore     = require('./stores/userStore');
 var cx            = require('classnames');
 
 var Login         = require('./components/login');
+var Register      = require('./components/register');
 
 var Posts         = require('./views/posts');
 
@@ -20,6 +22,10 @@ var actions       = require('./actions/actions');
 /* eslint-enable */
 
 var ReactNews = React.createClass({
+
+    mixins: [
+        Reflux.listenTo(actions.showOverlay, 'showOverlay')
+    ],
 
 	getInitialState: function() {
         return {
@@ -74,6 +80,41 @@ var ReactNews = React.createClass({
         this.togglePanel();
     },
 
+    showOverlay: function(type) {
+        var overlay = this.refs.overlay.getDOMNode();
+        overlay.addEventListener('click', this.hideOverlayListener);
+        this.setState({
+            overlayType: type,
+            showOverlay: true
+        });
+    },
+
+    hideOverlayListener: function(e) {
+        if (!this.isChildNodeOf(e.target, ['overlay-content'])) {
+            this.hideOverlay();
+        }
+    },
+
+    isChildNodeOf: function(target, parentIds) {
+        // returns boolean whether target is child of a list of ids
+        // parentIds can be a string or an array of ids
+        if (typeof parentIds === 'string') {
+            parentIds = [parentIds];
+        }
+        // if this node is not the one we want, move up the dom tree
+        while (target !== null && parentIds.indexOf(target.id) < 0) {
+            target = target.parentNode;
+        }
+        // at this point we have found our containing div or we are out of parent nodes
+        return (target !== null && parentIds.indexOf(target.id) >= 0);
+    },
+
+    hideOverlay: function() {
+        this.setState({
+            showOverlay: false
+        });
+    },
+
     render: function() {
 
         var user = this.state.user;
@@ -123,8 +164,8 @@ var ReactNews = React.createClass({
             // show login/register
             userArea = (
                 <span>
-                    <a>Sign In</a>
-                    <a className="register-link">Register</a>
+                    <a onClick={ actions.showOverlay.bind(this, 'login') } >Sign In</a>
+                    <a onClick={ actions.showOverlay.bind(this, 'register') } className="register-link">Register</a>
                 </span>
             );
         }
