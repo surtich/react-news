@@ -2,10 +2,11 @@
 
 var Reflux = require('reflux');
 var Firebase = require('firebase');
-var postsRef = new Firebase('https://sweltering-heat-2457.firebaseio.com/posts');
+var config = require('../../util/config');
+var postsRef = new Firebase(config.db.firebase + '/posts');
 var actions = require('../actions/actions');
 
-var postsPerPage = 8;
+var postsPerPage = config.app.posts.postsPerPage;
 
 var postsStore = Reflux.createStore({
 

@@ -2,11 +2,13 @@
 
 var Reflux = require('reflux');
 var Firebase = require('firebase');
-var ref = new Firebase('https://sweltering-heat-2457.firebaseio.com/');
+var config = require('../../util/config');
+var ref = new Firebase(config.db.firebase);
+
 var commentsRef = ref.child('comments'),
     postsRef = ref.child('posts'),
     usersRef = ref.child('users');
-    
+
 var actions = Reflux.createActions({
     // user actions
     'login': {},

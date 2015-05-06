@@ -10,6 +10,7 @@ var source      = require('vinyl-source-stream');
 var $           = require('gulp-load-plugins')();
 var eslint      = require('gulp-eslint');
 var runSequence = require('run-sequence');
+var config      = require('./src/util/config');
 
 /* eslint-enable */
 
@@ -94,7 +95,7 @@ gulp.task('serve', function() {
     gulp.src('dist')
         .pipe($.webserver({
             livereload: true,
-            port: 8080,
+            port: config.server.port,
             fallback: 'index.html'
         }));
 });
