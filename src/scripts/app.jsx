@@ -1,6 +1,7 @@
 /* eslint-disable no-multi-spaces */
 window.React      = require('react/addons');
 var Reflux        = require('reflux');
+var $             = require('jquery');
 
 var Router        = require('react-router');
 var RouteHandler  = Router.RouteHandler;
@@ -124,6 +125,22 @@ var ReactNews = React.createClass({
             user: user,
             showOverlay: false
         });
+    },
+
+    componentDidMount: function() {
+        // hide the menu when clicked away
+        $(document).on('click', function(e) {
+            if (this.state.showPanel && !this.isChildNodeOf(e.target, ['header-panel', 'panel-toggle'])) {
+                this.togglePanel();
+            }
+        }.bind(this));
+
+        $(document).keyup(function(e) {
+            if (e.keyCode === 27) { // esc
+                e.preventDefault();
+                this.hideOverlay();
+            }
+        }.bind(this));
     },
 
     render: function() {
