@@ -5,12 +5,34 @@ var postsStore = require('../stores/postsStore');
 var Spinner    = require('../components/spinner');
 var Router     = require('react-router');
 var Link       = Router.Link;
+
+var Reflux     = require('reflux');
+var actions    = require('../actions/actions');
+var Post       = require('../components/post');
 /* eslint-enable */
 
 var Posts = React.createClass({
 
+    mixins: [
+        Router.Navigation,
+        Reflux.listenTo(postsStore, 'onStoreUpdate')
+    ],
+
+    statics: {
+
+        willTransitionTo: function(transition, params) {
+            actions.listenToPosts(+params.pageNum || 1);
+        },
+
+        willTransitionFrom: function() {
+            actions.stopListeningToPosts();
+        }
+        
+    },
+
     getInitialState: function() {
         var postsData = postsStore.getDefaultData();
+        
         return {
             loading: true,
             posts: postsData.posts,
@@ -20,6 +42,19 @@ var Posts = React.createClass({
         };
     },
 
+    onStoreUpdate: function(postsData) {
+        if (!postsData.posts.length) {
+            // if no posts are returned
+            this.transitionTo('home');
+        }
+        this.setState({
+            loading: false,
+            posts: postsData.posts,
+            sortOptions: postsData.sortOptions,
+            nextPage: postsData.nextPage,
+            currentPage: postsData.currentPage
+        });
+    },
 
     render: function() {
         var posts = this.state.posts;
