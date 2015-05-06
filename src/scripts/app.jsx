@@ -55,6 +55,11 @@ var ReactNews = React.createClass({
 
         var user = this.state.user;
 
+        if (!user.isLoggedIn) {
+            actions.showOverlay('login');
+            return;
+        }
+
         if (titleEl.value.trim() === '') {
             this.setState({
                 'postError': 'title_error'
