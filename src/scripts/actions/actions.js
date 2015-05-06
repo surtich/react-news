@@ -60,6 +60,10 @@ actions.submitPost.preEmit = function(post) {
     });
 };
 
+actions.deletePost.preEmit = function(postId) {
+    postsRef.child(postId).remove();
+};
+
 /* Comment Actions
 ===============================*/
 

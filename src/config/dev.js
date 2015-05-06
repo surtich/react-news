@@ -7,7 +7,7 @@ module.exports = {
     },
     app: {
     	posts: {
-    		postsPerPage: 8
+    		postsPerPage: 3
     	}
     }
 };

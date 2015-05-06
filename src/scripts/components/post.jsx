@@ -31,7 +31,7 @@ var Post = React.createClass({
 
         deleteOption = (
             <span className="delete post-info-item">
-                <a>delete</a>
+                <a onClick={ actions.deletePost.bind(this, post.id) }>delete</a>
             </span>
         );
 
