@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint-disable no-multi-spaces */
 var postsStore = require('../stores/postsStore');
 var Spinner    = require('../components/spinner');

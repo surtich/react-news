@@ -29,11 +29,14 @@ var Post = React.createClass({
             );
         }
 
-        deleteOption = (
-            <span className="delete post-info-item">
-                <a onClick={ actions.deletePost.bind(this, post.id) }>delete</a>
-            </span>
-        );
+// add delete option if creator is logged in
+        if (user.isLoggedIn && user.uid === post.creatorUID) {   
+            deleteOption = (
+                <span className="delete post-info-item">
+                    <a onClick={ actions.deletePost.bind(this, post.id) }>delete</a>
+                </span>
+            );
+        }
 
         return (
             <div className="post">
@@ -46,7 +49,7 @@ var Post = React.createClass({
                 <div className="post-info">
                     <div className="posted-by">
                         <span className="post-info-item">
-                            { post.creator }
+                            <Link to="profile" params={{ username: post.creator }}>{ post.creator }</Link>
                         </span>
                         <span className="post-info-item">
                             { this.timeAgo(post.time) }
