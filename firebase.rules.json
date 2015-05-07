@@ -1,11 +1,18 @@
 {
   "rules": {
-    ".read": true,
-    ".write": true,
+    ".read": false,
+    ".write": false,
     "posts": {
+      ".read": true,
+      "$post": {
+        ".write": "auth !== null",
+        ".validate": "auth !== null && newData.child('creatorUID').val() === auth.uid && root.child('users/' + auth.uid + '/username').val() === newData.child('creator').val()"
+      },
       ".indexOn": [ "time", "upvotes", "commentCount" ]
     },
     "users": {
+      ".read": true,
+      ".write": false,
       ".indexOn": [ "username" ]
     }
   }

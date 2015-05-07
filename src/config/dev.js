@@ -8,7 +8,7 @@ module.exports = {
     app: {
         gravatarURI: 'https://www.gravatar.com/avatar/',
     	posts: {
-    		postsPerPage: 3
+    		postsPerPage: 8
     	}
     }
 };
