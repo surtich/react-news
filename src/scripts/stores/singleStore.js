@@ -1,11 +1,13 @@
 var Reflux = require('reflux');
 var Firebase = require('firebase');
 var config = require('../../util/config');
-var postsRef = new Firebase(config.db.firebase + '/posts');
+var ref = new Firebase(config.db.firebase);
+var postsRef = ref.child('posts');
+var commentsRef = ref.child('comments');
 var actions = require('../actions/actions');
 
 // store listener references
-var postListener;
+var postListener, commentListener;
 
 var postStore = Reflux.createStore({
 
@@ -20,6 +22,7 @@ var postStore = Reflux.createStore({
 
     listenToPost: function(postId) {
         postListener = postsRef.child(postId).on('value', this.updatePost.bind(this));
+        commentListener = commentsRef.orderByChild('postId').equalTo(postId).on('value', this.updateComments.bind(this));
     },
 
     updatePost: function(postData) {
@@ -36,10 +39,21 @@ var postStore = Reflux.createStore({
         this.trigger(this.postData);
     },
 
+    updateComments: function(comments) {
+        this.postData.comments = [];
+        comments.forEach(function(commentData) {
+            var comment = commentData.val();
+            comment.id = commentData.key();
+            this.postData.comments.unshift(comment);
+        }.bind(this));
+        this.trigger(this.postData);
+    },
+
     stopListeningToPost: function(postId) {
         if (!this.postData.post.isDeleted) {
             postsRef.child(postId).off('value', postListener);
         }
+        commentsRef.off('value', commentListener);
     },
 
     getDefaultData: function() {
@@ -49,18 +63,3 @@ var postStore = Reflux.createStore({
 });
 
 module.exports = postStore;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

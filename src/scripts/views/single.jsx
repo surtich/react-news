@@ -39,6 +39,7 @@ var SinglePost = React.createClass({
     onUpdate: function(postData) {
         this.setState({
             post: postData.post,
+            comments: postData.comments,
             loading: false
         });
     },

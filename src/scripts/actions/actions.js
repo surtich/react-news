@@ -158,6 +158,14 @@ actions.submitPost.preEmit = function(post) {
 
 actions.deletePost.preEmit = function(postId) {
     postsRef.child(postId).remove();
+    commentsRef.orderByChild('postId')
+    .startAt(postId)
+    .endAt(postId)
+    .once('value', function(comments) {
+        comments.forEach(function(comment) {
+            comment.ref().remove()
+        })
+    });
 };
 
 /* Comment Actions
