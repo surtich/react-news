@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
     hostnameFromUrl: function(str) {
         var url = document.createElement('a');

@@ -1,10 +1,9 @@
-'use strict';
-
 // actions
 var actions = require('../actions/actions');
 
 // components
 var Link = require('react-router').Link;
+var Upvote = require('./upvote')
 
 var Comment = React.createClass({
 
@@ -36,6 +35,11 @@ var Comment = React.createClass({
             );
         }
 
+        var upvoteActions = {
+            upvote: actions.upvoteComment,
+            downvote: actions.downvoteComment
+        };
+
         return (
             <div className="comment cf">
                 <div className="comment-text">
@@ -43,6 +47,11 @@ var Comment = React.createClass({
                 </div>
                 <div className="comment-info">
 		            <div className="posted-by float-left">
+                        <Upvote
+                            upvoteActions={ upvoteActions }
+                            user={ user }
+                            itemId={ comment.id }
+                            upvotes={ comment.upvotes ? this.abbreviateNumber(comment.upvotes) : 0 } />
                         <span className="post-info-item">
                             <Link to="profile" params={{ username: comment.creator }}>{ comment.creator }</Link>
                         </span>

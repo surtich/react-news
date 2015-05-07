@@ -1,5 +1,3 @@
-'use strict';
-
 var actions = require('../actions/actions');
 var throttle = require('lodash/function/throttle');
 

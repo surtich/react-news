@@ -218,5 +218,27 @@ actions.deleteComment.preEmit = function(commentId, postId) {
     });
 };
 
+actions.upvoteComment.preEmit = function(userId, commentId) {
+    commentsRef.child(commentId).child('upvotes').transaction(function(curr) {
+        return (curr || 0) + 1;
+    }, function(error, success) {
+        if (success) {
+            // register upvote in user's profile
+            usersRef.child(userId).child('upvoted').child(commentId).set(true);
+        }
+    });
+};
+
+actions.downvoteComment.preEmit = function(userId, commentId) {
+    commentsRef.child(commentId).child('upvotes').transaction(function(curr) {
+        return curr - 1;
+    }, function(error, success) {
+        if (success) {
+            // register upvote in user's profile
+            usersRef.child(userId).child('upvoted').child(commentId).remove();
+        }
+    });
+};
+
 
 module.exports = actions;

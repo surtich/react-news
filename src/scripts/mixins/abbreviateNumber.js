@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
     abbreviateNumber: function(value) {
         // Abbreviates numbers >= 1K
