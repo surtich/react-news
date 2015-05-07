@@ -110,7 +110,9 @@ actions.createProfile.listen(function(uid, username, email) {
     var profile = {
         username: username,
         md5hash: md5hash,
-        upvoted: {}
+        upvoted: {
+            "empty_key": "do not delete" // <- Avoid Firebase removes empty objects
+        }
     };
     usersRef.child(uid).set(profile, function(error) {
         if (error === null) {
@@ -165,6 +167,28 @@ actions.deletePost.preEmit = function(postId) {
         comments.forEach(function(comment) {
             comment.ref().remove()
         })
+    });
+};
+
+actions.upvotePost.preEmit = function(userId, postId) {
+    postsRef.child(postId).child('upvotes').transaction(function(curr) {
+        return (curr || 0) + 1;
+    }, function(error, success) {
+        if (success) {
+            // register upvote in user's profile
+            usersRef.child(userId).child('upvoted').child(postId).set(true);
+        }
+    });
+};
+
+actions.downvotePost.preEmit = function(userId, postId) {
+    postsRef.child(postId).child('upvotes').transaction(function(curr) {
+        return curr - 1;
+    }, function(error, success) {
+        if (success) {
+            // register upvote in user's profile
+            usersRef.child(userId).child('upvoted').child(postId).remove();
+        }
     });
 };
 

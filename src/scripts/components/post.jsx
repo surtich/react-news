@@ -1,6 +1,8 @@
 // actions
 var actions = require('../actions/actions');
 // components
+var Upvote = require('./upvote');
+
 var Link = require('react-router').Link;
 
 var Post = React.createClass({
@@ -17,6 +19,11 @@ var Post = React.createClass({
         var post = this.props.post;
         var commentCount = post.commentCount || 0;
         var deleteOption = '';
+
+        var upvoteActions = {
+            upvote: actions.upvotePost,
+            downvote: actions.downvotePost
+        };
 
         if (post.isDeleted) {
             // post doesn't exist
@@ -48,6 +55,11 @@ var Post = React.createClass({
                 </div>
                 <div className="post-info">
                     <div className="posted-by">
+                        <Upvote
+                            upvoteActions={ upvoteActions }
+                            user={ user }
+                            itemId={ post.id }
+                            upvotes={ post.upvotes ? this.abbreviateNumber(post.upvotes) : 0 } />
                         <span className="post-info-item">
                             <Link to="profile" params={{ username: post.creator }}>{ post.creator }</Link>
                         </span>

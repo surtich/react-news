@@ -24,6 +24,8 @@ var UhOh          = require('./views/404');
 
 var actions       = require('./actions/actions');
 
+var config = require('./../util/config');
+
 var attachFastClick = require('fastclick');
 /* eslint-enable */
 
