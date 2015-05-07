@@ -20,6 +20,7 @@ var Register      = require('./components/register');
 var Posts         = require('./views/posts');
 var Profile       = require('./views/profile');
 var SinglePost    = require('./views/single');
+var UhOh          = require('./views/404');
 
 var actions       = require('./actions/actions');
 
@@ -247,6 +248,7 @@ var routes = (
         <Route name="posts" path="/posts/:pageNum" handler={ Posts } ignoreScrollBehavior />
         <Route name="profile" path="user/:username" handler={ Profile } />
         <Route name="post" path="/post/:postId" handler={ SinglePost } />
+        <Route name="404" path="/404" handler={ UhOh } />
     </Route>
 );
 

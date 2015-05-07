@@ -7,6 +7,8 @@ var usersRef = ref.child('users');
 
 var actions = require('../actions/actions');
 
+var $ = require('jquery');
+
 var defaultUser = {
     uid: '',
     profile: {

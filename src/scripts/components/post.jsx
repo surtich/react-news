@@ -29,7 +29,7 @@ var Post = React.createClass({
             );
         }
 
-// add delete option if creator is logged in
+        // add delete option if creator is logged in
         if (user.isLoggedIn && user.uid === post.creatorUID) {   
             deleteOption = (
                 <span className="delete post-info-item">

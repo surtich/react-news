@@ -26,7 +26,7 @@ var SinglePost = React.createClass({
     statics: {
 
         willTransitionTo: function(transition, params) {
-            // watch current post and comments
+            // watch current post and commentspostData
             actions.listenToPost(params.postId);
         },
 
@@ -37,6 +37,9 @@ var SinglePost = React.createClass({
     },
 
     onUpdate: function(postData) {
+        if (postData.post.isDeleted === true) {
+            return this.transitionTo('404');
+        }
         this.setState({
             post: postData.post,
             comments: postData.comments,
