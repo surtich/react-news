@@ -54,6 +54,25 @@ var Posts = React.createClass({
         });
     },
 
+    updateSortBy: function(e) {
+        e.preventDefault();
+        var currentPage = this.state.currentPage || 1;
+        
+        actions.setSortBy(this.refs.sortBy.getDOMNode().value);
+
+        this.setState({
+            loading: true
+        });
+
+        if (currentPage === 1) {
+            actions.stopListeningToPosts();
+            actions.listenToPosts(currentPage);
+        } else {
+            this.transitionTo('posts', { pageNum: 1 });
+        }
+    },
+
+
     render: function() {
         var posts = this.state.posts;
         var currentPage = this.state.currentPage || 1;
@@ -77,6 +96,7 @@ var Posts = React.createClass({
                     <select
                         id="sortby-select"
                         className="sortby-select"
+                        onChange={ this.updateSortBy }
                         value={ sortOptions.currentValue }
                         ref="sortBy"
                     >

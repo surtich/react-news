@@ -1,5 +1,3 @@
-'use strict';
-
 var Reflux = require('reflux');
 var Firebase = require('firebase');
 var config = require('../../util/config');
@@ -62,6 +60,10 @@ var postsStore = Reflux.createStore({
             nextPage: this.nextPage,
             sortOptions: this.sortOptions
         });
+    },
+
+    setSortBy: function(value) {
+        this.sortOptions.currentValue = value;
     },
 
     getDefaultData: function() {
