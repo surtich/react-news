@@ -19,6 +19,7 @@ var Register      = require('./components/register');
 
 var Posts         = require('./views/posts');
 var Profile       = require('./views/profile');
+var SinglePost    = require('./views/single');
 
 var actions       = require('./actions/actions');
 
@@ -29,7 +30,9 @@ var ReactNews = React.createClass({
 
     mixins: [
         Reflux.listenTo(userStore, 'onStoreUpdate'),
-        Reflux.listenTo(actions.showOverlay, 'showOverlay')
+        Reflux.listenTo(actions.showOverlay, 'showOverlay'),
+        Reflux.listenTo(actions.goToPost, 'goToPost'),
+        require('react-router').Navigation
     ],
 
 	getInitialState: function() {
@@ -148,6 +151,10 @@ var ReactNews = React.createClass({
         }.bind(this));
     },
 
+    goToPost: function(postId) {
+        this.transitionTo('post', { postId: postId });
+    },
+
     render: function() {
         var user = this.state.user;
         var username = user ? user.profile.username : '';
@@ -239,6 +246,7 @@ var routes = (
         <DefaultRoute name="home" handler={ Posts } />
         <Route name="posts" path="/posts/:pageNum" handler={ Posts } ignoreScrollBehavior />
         <Route name="profile" path="user/:username" handler={ Profile } />
+        <Route name="post" path="/post/:postId" handler={ SinglePost } />
     </Route>
 );
 
