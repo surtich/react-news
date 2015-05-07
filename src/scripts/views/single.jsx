@@ -42,6 +42,27 @@ var SinglePost = React.createClass({
         });
     },
 
+    addComment: function(e) {
+        e.preventDefault();
+
+        if (!this.props.user.isLoggedIn) {
+            actions.showOverlay('login');
+            return;
+        }
+
+        var commentTextEl = this.refs.commentText.getDOMNode();
+        var comment = {
+            postId: this.props.params.postId,
+            postTitle: this.state.post.title,
+            text: commentTextEl.value.trim(),
+            creator: this.props.user.profile.username,
+            creatorUID: this.props.user.uid,
+            time: Date.now()
+        };
+        actions.addComment(comment);
+        commentTextEl.value = '';
+    },
+
     render: function() {
         var user = this.props.user;
         var comments = this.state.comments;
@@ -64,6 +85,10 @@ var SinglePost = React.createClass({
         return (
             <div className="content full-width">
                 { content }
+                <form className='comment-form' onSubmit={ this.addComment }>
+                    <textarea placeholder="Post a Comment" ref="commentText" className="comment-input full-width"></textarea>
+                    <button type="submit" className="button button-primary">Submit</button>
+                </form>
             </div>
         );
     }

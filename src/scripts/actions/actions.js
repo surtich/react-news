@@ -163,5 +163,21 @@ actions.deletePost.preEmit = function(postId) {
 /* Comment Actions
 ===============================*/
 
+actions.addComment.preEmit = function(comment) {
+    commentsRef.push(comment, function(error) {
+        if (error === null) {
+            actions.updateCommentCount(comment.postId, 1);
+        }
+    });
+};
+
+actions.deleteComment.preEmit = function(commentId, postId) {
+    commentsRef.child(commentId).remove(function(error) {
+        if (error === null) {
+            actions.updateCommentCount(postId, -1);
+        }
+    });
+};
+
 
 module.exports = actions;
