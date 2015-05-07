@@ -24,7 +24,7 @@ var UhOh          = require('./views/404');
 
 var actions       = require('./actions/actions');
 
-var config        = require('./../util/config');
+var attachFastClick = require('fastclick');
 /* eslint-enable */
 
 var ReactNews = React.createClass({
@@ -256,3 +256,6 @@ var routes = (
 Router.run(routes, function(Handler) {
     React.render(<Handler />, document.getElementById('app'));
 });
+
+// fastclick eliminates 300ms click delay on mobile
+attachFastClick(document.body);

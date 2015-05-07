@@ -40,6 +40,7 @@
     "reflux": "~0.2.7",
     "firebase": "~2.2.4",
     "moment": "~2.10.2",
-    "crypto": "0.0.3"
+    "crypto": "0.0.3",
+    "fastclick": "~1.0.6"
   }
 }
