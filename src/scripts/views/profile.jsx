@@ -9,6 +9,8 @@ var userStore = require('../stores/userStore');
 
 // components
 var Spinner = require('../components/spinner');
+var Post = require('../components/post');
+var Comment = require('../components/comment');
 
 var Profile = React.createClass({
 
@@ -59,6 +61,30 @@ var Profile = React.createClass({
     render: function() {
         var user = this.props.user;
     	var profileData = this.state.profileData;
+        var posts = profileData.posts;
+        var comments = profileData.comments;
+
+        var postList = false,
+            commentList = false,
+            postHeader,
+            commentsHeader;
+
+        if (this.state.isLoading) {
+            postHeader = <h2>Loading Posts...</h2>;
+            postList = <Spinner />;
+            commentsHeader = <h2>Loading Comments... <Spinner /></h2>;
+            commentList = <Spinner />;
+        } else {
+            postHeader = <h2>{ posts.length ? 'Latest' : 'No'} Posts</h2>;
+            commentsHeader = <h2>{ comments.length ? 'Latest' : 'No'} Comments</h2>;
+
+            postList = posts.map(function(post) {
+                return <Post post={ post } user={ user } key={ post.id } />;
+            });
+            commentList = comments.map(function(comment) {
+                return <Comment comment={ comment } user={ user } key={ comment.id } showPostTitle={ true } />;
+            });
+        }
     	
         return (
             <div className="content full-width">
@@ -70,6 +96,14 @@ var Profile = React.createClass({
                     )
                 }
 	            <h1>{ this.props.params.username + '\'s' } Profile</h1>
+                <div className="user-posts">
+                    { postHeader }
+                    { postList }
+                </div>
+                <div className="user-comments">
+                    { commentsHeader }
+                    { commentList }
+                </div>
             </div>
         );
     }

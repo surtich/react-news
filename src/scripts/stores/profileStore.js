@@ -1,6 +1,14 @@
 var Reflux = require('reflux');
 
+var config = require('../../util/config');
+var ref = new Firebase(config.db.firebase);
+var commentsRef = ref.child('comments'),
+    postsRef = ref.child('posts');
+
 var actions = require('../actions/actions');
+
+// store listener references
+var postListener, commentListener;
 
 var profileStore = Reflux.createStore({
 
@@ -14,9 +22,35 @@ var profileStore = Reflux.createStore({
 
     listenToProfile: function(userId) {
         this.userId = userId;
+        postListener = postsRef.orderByChild('creatorUID').equalTo(userId).limitToLast(3)
+            .on('value', this.updatePosts.bind(this));
+        commentListener = commentsRef.orderByChild('creatorUID').equalTo(userId).limitToLast(3)
+            .on('value', this.updateComments.bind(this));
     },
 
     stopListeningToProfile: function() {
+        postsRef.off('value', postListener);
+        commentsRef.off('value', commentListener);
+    },
+
+    updatePosts: function(posts) {
+        this.posts = [];
+        posts.forEach(function(postData) {
+            var post = postData.val();
+            post.id = postData.key();
+            this.posts.unshift(post);
+        }.bind(this));
+        this.triggerAll();
+    },
+
+    updateComments: function(comments) {
+        this.comments = [];
+        comments.forEach(function(commentData) {
+            var comment = commentData.val();
+            comment.id = commentData.key();
+            this.comments.unshift(comment);
+        }.bind(this));
+        this.triggerAll();
     },
 
     triggerAll: function () {
