@@ -171,6 +171,13 @@ actions.deletePost.preEmit = function(postId) {
 /* Comment Actions
 ===============================*/
 
+actions.updateCommentCount.preEmit = function(postId, n) {
+    // updates comment count on post
+    postsRef.child(postId).child('commentCount').transaction(function(curr) {
+        return curr + n;
+    });
+};
+
 actions.addComment.preEmit = function(comment) {
     commentsRef.push(comment, function(error) {
         if (error === null) {
