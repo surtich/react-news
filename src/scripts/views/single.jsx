@@ -4,6 +4,7 @@ var actions     = require('../actions/actions');
 var Spinner     = require('../components/spinner');
 var Post        = require('../components/post');
 var Router      = require('react-router');
+var Comment     = require('../components/comment');
 
 var SinglePost = React.createClass({
 
@@ -75,9 +76,16 @@ var SinglePost = React.createClass({
         // } else if (post.isDeleted) {
         //     this.replaceWith('404');
         } else {
+            comments = comments.map(function(comment) {
+                return <Comment comment={ comment } user={ user } key={ comment.id } />;
+            });
             content = (
                 <div>
                     <Post post={ post } user={ user } key={ postId } />
+                    <div className="comments">
+                        <h2>{ this.pluralize(comments.length, 'Comment') }</h2>
+                        { comments }
+                    </div>
                 </div>
             );
         }
