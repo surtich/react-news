@@ -5,10 +5,18 @@
     "posts": {
       ".read": true,
       "$post": {
-        ".write": "auth !== null",
+        ".write": "auth !== null && (newData.child('creatorUID').val() === auth.uid || data.child('creatorUID').val() === auth.uid)",
         ".validate": "auth !== null && newData.child('creatorUID').val() === auth.uid && root.child('users/' + auth.uid + '/username').val() === newData.child('creator').val()"
       },
-      ".indexOn": [ "time", "upvotes", "commentCount" ]
+      ".indexOn": [ "time", "upvotes", "commentCount", "creatorUID" ]
+    },
+    "comments": {
+      ".read": true,
+      "$comment": {
+        ".write": "auth !== null && (newData.child('creatorUID').val() === auth.uid || data.child('creatorUID').val() === auth.uid)",
+        ".validate": "auth !== null && newData.child('creatorUID').val() === auth.uid && root.child('users/' + auth.uid + '/username').val() === newData.child('creator').val()"
+      },
+      ".indexOn": [ "postId", "creatorUID" ]
     },
     "users": {
       ".read": true,

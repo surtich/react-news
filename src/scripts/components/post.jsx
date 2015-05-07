@@ -55,7 +55,9 @@ var Post = React.createClass({
                             { this.timeAgo(post.time) }
                         </span>
                         <span className="post-info-item">
+                            <Link to="post" params={{ postId: post.id }}>
                                 { this.pluralize(commentCount, 'comment') }
+                            </Link>
                         </span>
                         { deleteOption }
                     </div>
