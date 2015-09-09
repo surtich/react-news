@@ -1,17 +1,18 @@
 'use strict';
 
-// actions
-var actions = require('../actions/actions');
-// components
-var Link = require('react-router').Link;
-var Upvote = require('./upvote');
+import React from 'react/addons';
+import { Link } from 'react-router';
 
-var abbreviateNumber = require('../util/abbreviateNumber');
-var pluralize = require('../util/pluralize');
-var hostNameFromUrl = require('../util/hostnameFromUrl');
-var timeAgo = require('../util/timeAgo');
+import Actions from '../actions/Actions';
 
-var Post = React.createClass({
+import Upvote from './Upvote';
+
+import abbreviateNumber from '../util/abbreviateNumber';
+import pluralize from '../util/pluralize';
+import hostNameFromUrl from '../util/hostNameFromUrl';
+import timeAgo from '../util/timeAgo';
+
+const Post = React.createClass({
 
     propTypes: {
         user: React.PropTypes.object,
@@ -19,10 +20,14 @@ var Post = React.createClass({
     },
 
     render() {
-        var user = this.props.user;
-        var post = this.props.post;
-        var commentCount = post.commentCount || 0;
-        var deleteOption = '';
+        let user = this.props.user;
+        let userUpvoted = user.upvoted || {};
+        let post = this.props.post;
+        let commentCount = post.commentCount || 0;
+        let upvoteActions = {
+            upvote: Actions.upvotePost,
+            downvote: Actions.downvotePost
+        };
 
         if (post.isDeleted) {
             // post doesn't exist
@@ -36,18 +41,11 @@ var Post = React.createClass({
         }
 
         // add delete option if creator is logged in
-        if (user.uid === post.creatorUID) {
-            deleteOption = (
-                <span className="delete post-info-item">
-                    <a onClick={ actions.deletePost.bind(this, post.id) }>delete</a>
-                </span>
-            );
-        }
-
-        var upvoteActions = {
-            upvote: actions.upvotePost,
-            downvote: actions.downvotePost
-        };
+        let deleteOption = user.uid !== post.creatorUID ? '' : (
+            <span className="delete post-info-item">
+                <a onClick={ () => Actions.deletePost(post) }>delete</a>
+            </span>
+        );
 
         return (
             <div className="post">
@@ -60,18 +58,20 @@ var Post = React.createClass({
                 <div className="post-info">
                     <div className="posted-by">
                         <Upvote
-                            upvoteActions= { upvoteActions }
+                            upvoteActions={ upvoteActions }
                             user={ user }
                             itemId={ post.id }
-                            upvotes={ post.upvotes ? abbreviateNumber(post.upvotes) : 0 } />
+                            isUpvoted={ !!userUpvoted[post.id] }
+                            upvotes={ post.upvotes ? abbreviateNumber(post.upvotes) : '0' }
+                        />
                         <span className="post-info-item">
-                            <Link to="profile" params={{ username: post.creator }}>{ post.creator }</Link>
+                            <Link to={ `/user/${post.creator}` }>{ post.creator }</Link>
                         </span>
                         <span className="post-info-item">
                             { timeAgo(post.time) }
                         </span>
                         <span className="post-info-item">
-                            <Link to="post" params={{ postId: post.id }}>
+                            <Link to={ `/post/${post.id}` }>
                                 { pluralize(commentCount, 'comment') }
                             </Link>
                         </span>
@@ -83,4 +83,4 @@ var Post = React.createClass({
     }
 });
 
-module.exports = Post;
+export default Post;

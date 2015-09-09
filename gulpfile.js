@@ -1,36 +1,28 @@
-/* eslint-disable no-multi-spaces */
+'use strict';
 
-var gulp               = require('gulp');
-var del                = require('del');
-var path               = require('path');
-var browserify         = require('browserify');
-var babelify           = require('babelify');
+var gulp = require('gulp');
+var runSequence = require('run-sequence');
+var browserSync = require('browser-sync').create();
 var historyApiFallback = require('connect-history-api-fallback');
-var watchify           = require('watchify');
-var browserSync        = require('browser-sync').create();
-var source             = require('vinyl-source-stream');
-var buffer             = require('vinyl-buffer');
-var $                  = require('gulp-load-plugins')();
-var eslint             = require('gulp-eslint');
-var runSequence        = require('run-sequence');
-var config             = require('./src/util/config');
-var extend             = require('lodash/object/extend');
+var browserify = require('browserify');
+var watchify = require('watchify');
+var babelify = require('babelify');
+var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
+var del = require('del');
+var extend = require('lodash/object/extend');
 
-/* eslint-enable */
-/*eslint no-console:0 */
+var $ = require('gulp-load-plugins')();
 
 var srcDir = './src/';
 var buildDir = './build/';
 var distDir = './dist/';
 var mapsDir = './maps/';
 
-var jsEntry = 'app';
+var jsEntry = 'render.js';
 var jsTargetName = 'app.js';
 var sassEntry = srcDir + 'scss/*.scss';
 
-var prod = $.util.env.prod;
-
-// gulp-plumber for error handling
 function handleError() {
     $.util.beep();
     $.notify.onError({
@@ -41,6 +33,14 @@ function handleError() {
     // Keep gulp from hanging on this task
     this.emit('end');
 }
+
+gulp.task('lint', function() {
+    return gulp.src(srcDir + 'js/**/*')
+        .pipe($.eslint({
+            useEsLintrc: true
+        }))
+        .pipe($.eslint.format());
+});
 
 function buildScript(file, watch) {
     var props = extend({}, watchify.args, {
@@ -92,38 +92,17 @@ gulp.task('styles', function() {
         .pipe($.size());
 });
 
-// HTML
 gulp.task('html', function() {
     return gulp.src(srcDir + '*.html')
         .pipe(gulp.dest(buildDir))
         .pipe($.size());
 });
 
-// Favicon
-gulp.task('favicon', function() {
-    return gulp.src(srcDir + 'favicon.ico')
-        .pipe(gulp.dest(buildDir));
-
-});
-
-// Libs
-gulp.task('libs', function() {
-
-});
-
 gulp.task('minify', function() {
     var assets = $.useref.assets();
 
-    // move favicon to /dist
-    gulp.src(buildDir + 'favicon.ico')
-        .pipe(gulp.dest(distDir));
-
-    // move libs to /dist
-    gulp.src(buildDir + 'libs/**')
-          .pipe(gulp.dest(distDir + 'libs/'));
-
     // minify css/js and move index.html to /dist
-    return gulp.src(buildDir + '*.html')
+    return gulp.src('build/*.html')
         .pipe($.plumber())
         .pipe(assets)
         .pipe($.if('*.js', $.uglify()))
@@ -135,31 +114,6 @@ gulp.task('minify', function() {
         .pipe($.exit());
 });
 
-gulp.task('lint', function () {
-    return gulp.src([srcDir + 'js/**/*', 'gulpfile.js'])
-      // eslint() attaches the lint output to the eslint property
-      // of the file object so it can be used by other modules.
-      .pipe(eslint({
-        globals: {
-          'require': true,
-          'document': true,
-          '__dirname': true,
-          'module': true,
-          'console': true,
-          'window': true,
-          'React': true
-        },
-        rules: {
-          'quotes': [2, 'single', 'avoid-escape'],
-          'strict': 0,
-          'no-unused-vars': 0
-        }
-    }))
-    // eslint.format() outputs the lint results to the console.
-    // Alternatively use eslint.formatEach() (see Docs).
-    .pipe(eslint.format());
-});
-
 gulp.task('clean-build', function(cb) {
     del(buildDir, cb);
 });
@@ -168,11 +122,11 @@ gulp.task('clean-dist', function(cb) {
     del(distDir, cb);
 });
 
-gulp.task('build-watch', ['html', 'styles', 'favicon', 'libs'], function() {
+gulp.task('build-watch', ['html', 'styles'], function() {
     return buildScript(jsEntry, true);
 });
 
-gulp.task('build-no-watch', ['html', 'styles', 'favicon', 'libs'], function() {
+gulp.task('build-no-watch', ['html', 'styles'], function() {
     return buildScript(jsEntry, false);
 });
 

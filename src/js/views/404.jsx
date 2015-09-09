@@ -1,17 +1,19 @@
 'use strict';
 
-// components
-var Link = require('react-router').Link;
+import React from 'react/addons';
 
-var uhOh = React.createClass({
+// components
+const Link = require('react-router').Link;
+
+const uhOh = React.createClass({
     render() {
         return (
             <div className="content full-width">
                 <h1>{ 'That Page Doesn\'t Exist' }</h1>
-                <p><Link to="home">Return to the homepage</Link></p>
+                <p><Link to="/">Return to the homepage</Link></p>
             </div>
         );
     }
 });
 
-module.exports = uhOh;
+export default uhOh;

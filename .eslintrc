@@ -3,7 +3,8 @@
     "env": {
         "browser": true,
         "node": true,
-        "es6": true
+        "es6": true,
+        "jasmine": true
     },
     "ecmaFeatures": {
         "jsx": true,
@@ -25,11 +26,14 @@
             "after": true
         }],
         "eqeqeq": [2, "smart"],
-        "indent": [2, 4],
+        "indent": [2, 4, {
+            "SwitchCase": 1
+        }],
         "no-use-before-define": [2, "nofunc"],
         "quotes": [2, "single"],
         "semi": [2, "always"],
 
+        // eslint-plugin-react specific
         "react/jsx-boolean-value": 1,
         "react/jsx-no-undef": 1,
         "react/jsx-quotes": 1,
