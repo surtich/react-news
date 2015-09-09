@@ -3,7 +3,7 @@ var actions = require('../actions/actions');
 
 // components
 var Link = require('react-router').Link;
-var Upvote = require('./upvote')
+var Upvote = require('./upvote');
 
 var Comment = React.createClass({
 
@@ -27,7 +27,7 @@ var Comment = React.createClass({
         }
 
         var deleteOption = '';
-        if (user.uid === comment.creatorUID) {   
+        if (user.uid === comment.creatorUID) {
             deleteOption = (
                 <span className="delete post-info-item">
                     <a onClick={ actions.deleteComment.bind(this, comment.id, comment.postId) }>delete</a>

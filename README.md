@@ -15,7 +15,7 @@ npm install
 npm start
 ```
 
-Navigate to [http://localhost:8080](http://localhost:8080)
+Navigate to [http://localhost:3000](http://localhost:3000)
 
 
 ### To deploy to Firebase
