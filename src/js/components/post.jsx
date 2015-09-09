@@ -1,9 +1,15 @@
+'use strict';
+
 // actions
 var actions = require('../actions/actions');
 // components
+var Link = require('react-router').Link;
 var Upvote = require('./upvote');
 
-var Link = require('react-router').Link;
+var abbreviateNumber = require('../util/abbreviateNumber');
+var pluralize = require('../util/pluralize');
+var hostNameFromUrl = require('../util/hostnameFromUrl');
+var timeAgo = require('../util/timeAgo');
 
 var Post = React.createClass({
 
@@ -12,23 +18,11 @@ var Post = React.createClass({
         post: React.PropTypes.object
     },
 
-    mixins: [
-        require('../mixins/pluralize'),
-        require('../mixins/abbreviateNumber'),
-        require('../mixins/hostnameFromUrl'),
-        require('../mixins/timeAgo')
-    ],
-
-    render: function() {
+    render() {
         var user = this.props.user;
         var post = this.props.post;
         var commentCount = post.commentCount || 0;
         var deleteOption = '';
-
-        var upvoteActions = {
-            upvote: actions.upvotePost,
-            downvote: actions.downvotePost
-        };
 
         if (post.isDeleted) {
             // post doesn't exist
@@ -42,7 +36,7 @@ var Post = React.createClass({
         }
 
         // add delete option if creator is logged in
-        if (user.isLoggedIn && user.uid === post.creatorUID) {
+        if (user.uid === post.creatorUID) {
             deleteOption = (
                 <span className="delete post-info-item">
                     <a onClick={ actions.deletePost.bind(this, post.id) }>delete</a>
@@ -50,30 +44,35 @@ var Post = React.createClass({
             );
         }
 
+        var upvoteActions = {
+            upvote: actions.upvotePost,
+            downvote: actions.downvotePost
+        };
+
         return (
             <div className="post">
                 <div className="post-link">
                     <a className="post-title" href={ post.url }>{ post.title }</a>
                     <span className="hostname">
-                        (<a href={ post.url }>{ this.hostnameFromUrl(post.url) }</a>)
+                        (<a href={ post.url }>{ hostNameFromUrl(post.url) }</a>)
                     </span>
                 </div>
                 <div className="post-info">
                     <div className="posted-by">
                         <Upvote
-                            upvoteActions={ upvoteActions }
+                            upvoteActions= { upvoteActions }
                             user={ user }
                             itemId={ post.id }
-                            upvotes={ post.upvotes ? this.abbreviateNumber(post.upvotes) : 0 } />
+                            upvotes={ post.upvotes ? abbreviateNumber(post.upvotes) : 0 } />
                         <span className="post-info-item">
                             <Link to="profile" params={{ username: post.creator }}>{ post.creator }</Link>
                         </span>
                         <span className="post-info-item">
-                            { this.timeAgo(post.time) }
+                            { timeAgo(post.time) }
                         </span>
                         <span className="post-info-item">
                             <Link to="post" params={{ postId: post.id }}>
-                                { this.pluralize(commentCount, 'comment') }
+                                { pluralize(commentCount, 'comment') }
                             </Link>
                         </span>
                         { deleteOption }
@@ -82,7 +81,6 @@ var Post = React.createClass({
             </div>
         );
     }
-
 });
 
 module.exports = Post;

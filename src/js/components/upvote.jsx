@@ -1,5 +1,7 @@
+'use strict';
+
 var actions = require('../actions/actions');
-var throttle = require('lodash/function/throttle');
+var throttle = require('lodash.throttle');
 
 var cx = require('classnames');
 
@@ -8,25 +10,25 @@ var Upvote = React.createClass({
     propTypes: {
         user: React.PropTypes.object,
         itemId: React.PropTypes.string,
-        upvotes: React.PropTypes.number,
-        upvoteActions: React.PropTypes.object
+        upvoteActions: React.PropTypes.object,
+        upvotes: React.PropTypes.number
     },
 
-    getInitialState: function() {
+    getInitialState() {
         return {
             upvoted: false
         };
     },
 
-    componentDidMount: function() {
+    componentDidMount() {
         var upvoted = this.props.user.profile.upvoted;
-        this.setState({ upvoted: upvoted ? upvoted[this.props.itemId] : false }); // eslint-disable-line react/no-did-mount-set-state
+        this.setState({ upvoted: upvoted[this.props.itemId] }); //eslint-disable-line react/no-did-mount-set-state
     },
 
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         var upvoted = nextProps.user.profile.upvoted;
         this.setState({
-            upvoted: upvoted ? upvoted[this.props.itemId] : false
+            upvoted: upvoted[nextProps.itemId]
         });
     },
 
@@ -39,7 +41,7 @@ var Upvote = React.createClass({
         var upvoted = this.state.upvoted;
         var upvoteActions = this.props.upvoteActions;
 
-        if (upvoted === true) {
+        if (upvoted) {
             upvoteActions.downvote(userId, itemId);
         } else {
             upvoteActions.upvote(userId, itemId);
@@ -50,14 +52,14 @@ var Upvote = React.createClass({
         });
     }, 300, { trailing: false }),
 
-    render: function() {
+    render() {
         var userId = this.props.user.uid;
         var itemId = this.props.itemId;
         var upvotes = this.props.upvotes;
 
         var upvoted = this.state.upvoted;
-        var upvoteCx = cx({
-            'upvote': true,
+        var upvoteCx = cx(
+            'upvote', {
             'upvoted': upvoted
         });
 

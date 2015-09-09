@@ -1,13 +1,12 @@
-var Reflux = require('reflux');
+'use strict';
 
+var Promise = require('bluebird');
+var Reflux = require('reflux');
+var actions = require('../actions/actions');
 var Firebase = require('firebase');
 var config = require('../../util/config');
 var ref = new Firebase(config.db.firebase);
 var usersRef = ref.child('users');
-
-var actions = require('../actions/actions');
-
-var $ = require('jquery');
 
 var defaultUser = {
     uid: '',
@@ -22,15 +21,11 @@ var userStore = Reflux.createStore({
 
     listenables: actions,
 
-    init: function() {
+    init() {
         this.user = defaultUser;
     },
 
-    getDefaultData: function() {
-        return this.user;
-    },
-
-    onUpdateProfile: function(userId, profile) {
+    updateProfile(userId, profile) {
         this.user = {
             uid: userId,
             profile: profile,
@@ -39,19 +34,23 @@ var userStore = Reflux.createStore({
         this.trigger(this.user);
     },
 
-    getUserId: function(username) {
-        // returns userId given username
-        var defer = $.Deferred(); // eslint-disable-line new-cap
-        usersRef.orderByChild('username').equalTo(username).once('value', function(user) {
-            var userId = Object.keys(user.val())[0];
-            defer.resolve(userId);
-        });
-        return defer.promise();
-    },
-
-    onLogoutCompleted: function() {
+    logoutCompleted() {
         this.user = defaultUser;
         this.trigger(this.user);
+    },
+
+    getUserId: function(username, cb) {
+        // returns userId given username
+        return new Promise(function(resolve, reject) {
+            usersRef.orderByChild('username').equalTo(username).once('value', function(user) {
+                var userId = Object.keys(user.val())[0];
+                resolve(userId);
+            });
+        });
+    },
+
+    getDefaultData() {
+        return this.user;
     }
 });
 

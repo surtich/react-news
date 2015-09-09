@@ -1,27 +1,42 @@
+'use strict';
+
 var Reflux = require('reflux');
 
+// actions
 var actions = require('../actions/actions');
 
+// stores
 var loginStore = require('../stores/loginStore');
 var userStore = require('../stores/userStore');
 
+// components
 var Spinner = require('../components/spinner');
 
 var Register = React.createClass({
 
     mixins: [
-        Reflux.listenTo(loginStore, 'onErrorMessage'),
-        Reflux.listenTo(userStore, 'resetForm')
+        Reflux.listenTo(userStore, 'resetForm'),
+        Reflux.listenTo(loginStore, 'onErrorMessage')
     ],
 
-    getInitialState: function() {
+    getInitialState() {
         return {
             error: '',
             submitted: false
         };
     },
 
-    onErrorMessage: function(errorMessage) {
+    resetForm() {
+        this.setState({
+            submitted: false
+        });
+        this.refs.username.getDOMNode().value = '';
+        this.refs.email.getDOMNode().value = '';
+        this.refs.password.getDOMNode().value = '';
+        this.refs.submit.getDOMNode().disabled = false;
+    },
+
+    onErrorMessage(errorMessage) {
         this.refs.submit.getDOMNode().disabled = false;
         this.setState({
             error: errorMessage,
@@ -29,7 +44,7 @@ var Register = React.createClass({
         });
     },
 
-    registerUser: function(e) {
+    registerUser(e) {
         e.preventDefault();
 
         this.refs.submit.getDOMNode().disabled = true;
@@ -41,22 +56,16 @@ var Register = React.createClass({
             email: this.refs.email.getDOMNode().value.trim(),
             password: this.refs.password.getDOMNode().value.trim()
         };
+
         var username = this.refs.username.getDOMNode().value.trim();
+
         actions.register(username, loginData);
     },
 
-    resetForm: function() {
-        this.setState({
-            submitted: false
-        });
-        this.refs.username.getDOMNode().value = '';
-        this.refs.email.getDOMNode().value = '';
-        this.refs.password.getDOMNode().value = '';
-        this.refs.submit.getDOMNode().disabled = false;
-    },
-
-    render: function() {
-        var error = this.state.error ? <div className="error login-error">{ this.state.error }</div> : '';
+    render() {
+        var error = this.state.error && (
+            <div className="error login-error">{ this.state.error }</div>
+        );
 
         return (
             <div className="login md-modal text-center" id="overlay-content">

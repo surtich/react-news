@@ -1,7 +1,6 @@
-var Reflux = require('reflux');
+'use strict';
 
-// components
-var Spinner = require('../components/spinner');
+var Reflux = require('reflux');
 
 // actions
 var actions = require('../actions/actions');
@@ -10,6 +9,9 @@ var actions = require('../actions/actions');
 var loginStore = require('../stores/loginStore');
 var userStore = require('../stores/userStore');
 
+// components
+var Spinner = require('../components/spinner');
+
 var Login = React.createClass({
 
     mixins: [
@@ -17,14 +19,14 @@ var Login = React.createClass({
         Reflux.listenTo(loginStore, 'onErrorMessage')
     ],
 
-    getInitialState: function() {
+    getInitialState() {
         return {
             error: '',
             submitted: false
         };
     },
 
-    resetForm: function() {
+    resetForm() {
         this.refs.email.getDOMNode().value = '';
         this.refs.password.getDOMNode().value = '';
         this.refs.submit.getDOMNode().disabled = false;
@@ -33,7 +35,7 @@ var Login = React.createClass({
         });
     },
 
-    onErrorMessage: function(errorMessage) {
+    onErrorMessage(errorMessage) {
         this.refs.submit.getDOMNode().disabled = false;
         this.setState({
             error: errorMessage,
@@ -41,7 +43,7 @@ var Login = React.createClass({
         });
     },
 
-    login: function(e) {
+    login(e) {
         e.preventDefault();
 
         this.refs.submit.getDOMNode().disabled = true;
@@ -55,8 +57,10 @@ var Login = React.createClass({
         });
     },
 
-    render: function() {
-        var error = this.state.error ? <div className="error login-error">{ this.state.error }</div> : null;
+    render() {
+        var error = this.state.error && (
+            <div className="error login-error">{ this.state.error }</div>
+        );
 
         return (
             <div className="login text-center md-modal" id="overlay-content">

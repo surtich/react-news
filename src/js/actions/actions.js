@@ -4,12 +4,12 @@ var Reflux = require('reflux');
 var Firebase = require('firebase');
 var config = require('../../util/config');
 
-var $ = require('jquery');
+var Promise = require('bluebird');
 
 var ref = new Firebase(config.db.firebase);
-var commentsRef = ref.child('comments'),
-    postsRef = ref.child('posts'),
-    usersRef = ref.child('users');
+var commentsRef = ref.child('comments');
+var postsRef = ref.child('posts');
+var usersRef = ref.child('users');
 
 // used to create email hash for gravatar
 var hash = require('crypto').createHash('md5');
@@ -54,35 +54,33 @@ var actions = Reflux.createActions({
 
 actions.register.listen(function(username, loginData) {
 
-    function checkForUsername(name) {
-        // checks if username is taken
-        var defer = $.Deferred();  //eslint-disable-line new-cap
+    var checkForUsername = Promise.promisify(function(name, cb) {
         usersRef.orderByChild('username').equalTo(name).once('value', function(user) {
-            defer.resolve(!!user.val());
+            cb(!!user.val());
         });
-        return defer.promise();
-    }
+    });
 
     if (!username) {
         // no username provided
         actions.loginError('NO_USERNAME');
     } else {
         // check if username is already taken
-        checkForUsername(username).then(function(usernameTaken) {
-            if (usernameTaken) {
-                actions.loginError('USERNAME_TAKEN');
-            } else {
-                ref.createUser(loginData, function(error) {
-                    if (error) {
-                        // error during user creation
-                        actions.loginError(error.code);
-                    } else {
-                        // user successfully created
-                        actions.login(loginData, username);
-                    }
-                });
-            }
-        });
+        checkForUsername(username)
+            .then(function(usernameTaken) {
+                if (usernameTaken) {
+                    actions.loginError('USERNAME_TAKEN');
+                } else {
+                    ref.createUser(loginData, function(error) {
+                        if (error) {
+                            // error during user creation
+                            actions.loginError(error.code);
+                        } else {
+                            // user successfully created
+                            actions.login(loginData, username);
+                        }
+                    });
+                }
+            });
     }
 });
 

@@ -1,15 +1,15 @@
-/* eslint-disable no-multi-spaces */
-var postsStore = require('../stores/postsStore');
-var Spinner    = require('../components/spinner');
-var Router     = require('react-router');
-var Link       = Router.Link;
+'use strict';
 
-var Reflux     = require('reflux');
-var actions    = require('../actions/actions');
-var Post       = require('../components/post');
-/* eslint-enable */
+var Reflux = require('reflux');
+var actions = require('../actions/actions');
+var postsStore = require('../stores/postsStore');
+var Spinner = require('../components/spinner');
+var Post = require('../components/post');
+var Router = require('react-router');
+var Link = Router.Link;
 
 var Posts = React.createClass({
+
     propTypes: {
         user: React.PropTypes.object
     },
@@ -20,19 +20,17 @@ var Posts = React.createClass({
     ],
 
     statics: {
-
-        willTransitionTo: function(transition, params) {
+        willTransitionTo(transition, params) {
             actions.listenToPosts(+params.pageNum || 1);
         },
 
-        willTransitionFrom: function() {
+        willTransitionFrom() {
             actions.stopListeningToPosts();
         }
     },
 
-    getInitialState: function() {
+    getInitialState() {
         var postsData = postsStore.getDefaultData();
-
         return {
             loading: true,
             posts: postsData.posts,
@@ -42,7 +40,7 @@ var Posts = React.createClass({
         };
     },
 
-    onStoreUpdate: function(postsData) {
+    onStoreUpdate(postsData) {
         if (!postsData.posts.length) {
             // if no posts are returned
             this.transitionTo('home');
@@ -56,11 +54,12 @@ var Posts = React.createClass({
         });
     },
 
-    updateSortBy: function(e) {
+    updateSortBy(e) {
         e.preventDefault();
         var currentPage = this.state.currentPage || 1;
 
         actions.setSortBy(this.refs.sortBy.getDOMNode().value);
+
         this.setState({
             loading: true
         });
@@ -73,8 +72,7 @@ var Posts = React.createClass({
         }
     },
 
-
-    render: function() {
+    render() {
         var posts = this.state.posts;
         var currentPage = this.state.currentPage || 1;
         var sortOptions = this.state.sortOptions;

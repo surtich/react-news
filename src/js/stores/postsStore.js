@@ -1,3 +1,5 @@
+'use strict';
+
 var Reflux = require('reflux');
 var Firebase = require('firebase');
 var config = require('../../util/config');
@@ -10,39 +12,45 @@ var postsStore = Reflux.createStore({
 
     listenables: actions,
 
-    init: function() {
+    init() {
         this.posts = [];
         this.currentPage = 1;
         this.nextPage = true;
         this.sortOptions = {
-            currentValue: 'newest',
+            currentValue: 'upvotes',
             values: {
                 // values mapped to firebase locations
-                'newest': 'time',
                 'upvotes': 'upvotes',
+                'newest': 'time',
                 'comments': 'commentCount'
             }
         };
     },
 
-    onListenToPosts: function(pageNum) {
+    setSortBy(value) {
+        this.sortOptions.currentValue = value;
+    },
+
+    listenToPosts(pageNum) {
         this.currentPage = pageNum;
         postsRef
             .orderByChild(this.sortOptions.values[this.sortOptions.currentValue])
-            // + 1 extra post to determine whether another page exists
+            // +1 extra post to determine whether another page exists
             .limitToLast((this.currentPage * postsPerPage) + 1)
             .on('value', this.updatePosts.bind(this));
     },
 
-    stopListeningToPosts: function() {
+    stopListeningToPosts() {
         postsRef.off();
     },
 
-    updatePosts: function(postsSnapshot) {
+    updatePosts(postsSnapshot) {
         // posts is all posts through current page + 1
         var endAt = this.currentPage * postsPerPage;
+
         // accumulate posts in posts array
         var posts = [];
+
         postsSnapshot.forEach(function(postData) {
             var post = postData.val();
             post.id = postData.key();
@@ -51,6 +59,7 @@ var postsStore = Reflux.createStore({
 
         // if extra post doesn't exist, indicate that there are no more posts
         this.nextPage = (posts.length === endAt + 1);
+
         // slice off extra post
         this.posts = posts.slice(0, endAt);
 
@@ -62,11 +71,7 @@ var postsStore = Reflux.createStore({
         });
     },
 
-    setSortBy: function(value) {
-        this.sortOptions.currentValue = value;
-    },
-
-    getDefaultData: function() {
+    getDefaultData() {
         return {
             posts: this.posts,
             currentPage: this.currentPage,

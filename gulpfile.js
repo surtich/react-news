@@ -108,8 +108,7 @@ gulp.task('favicon', function() {
 
 // Libs
 gulp.task('libs', function() {
-    gulp.src('node_modules/jquery/dist/**/*')
-    .pipe(gulp.dest(buildDir + 'libs/jquery'));
+
 });
 
 gulp.task('minify', function() {

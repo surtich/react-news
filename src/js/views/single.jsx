@@ -1,12 +1,14 @@
-/* eslint-disable no-multi-spaces */
-var Reflux      = require('reflux');
+'use strict';
+
+var Reflux = require('reflux');
 var singleStore = require('../stores/singleStore');
-var actions     = require('../actions/actions');
-var Spinner     = require('../components/spinner');
-var Post        = require('../components/post');
-var Router      = require('react-router');
-var Comment     = require('../components/comment');
-/* eslint-enable no-multi-spaces */
+var actions = require('../actions/actions');
+var Spinner = require('../components/spinner');
+var Post = require('../components/post');
+var Comment = require('../components/comment');
+var Router = require('react-router');
+
+var pluralize = require('../util/pluralize');
 
 var SinglePost = React.createClass({
 
@@ -16,37 +18,31 @@ var SinglePost = React.createClass({
     },
 
     mixins: [
-        require('../mixins/pluralize'),
         Router.Navigation,
         Router.State,
         Reflux.listenTo(singleStore, 'onUpdate')
     ],
 
     statics: {
-
-        willTransitionTo: function(transition, params) {
-            // watch current post and commentspostData
+        willTransitionTo(transition, params) {
+            // watch current post and comments
             actions.listenToPost(params.postId);
         },
 
-        willTransitionFrom: function(transition, component) {
+        willTransitionFrom(transition, component) {
             actions.stopListeningToPost(component.state.post.id);
         }
-
     },
 
-    getInitialState: function() {
-            return {
-                post: false,
-                comments: [],
-                loading: true
-            };
-        },
+    getInitialState() {
+        return {
+            post: false,
+            comments: [],
+            loading: true
+        };
+    },
 
-    onUpdate: function(postData) {
-        if (postData.post.isDeleted === true) {
-            return this.transitionTo('404');
-        }
+    onUpdate(postData) {
         this.setState({
             post: postData.post,
             comments: postData.comments,
@@ -54,7 +50,7 @@ var SinglePost = React.createClass({
         });
     },
 
-    addComment: function(e) {
+    addComment(e) {
         e.preventDefault();
 
         if (!this.props.user.isLoggedIn) {
@@ -75,7 +71,7 @@ var SinglePost = React.createClass({
         commentTextEl.value = '';
     },
 
-    render: function() {
+    render() {
         var user = this.props.user;
         var comments = this.state.comments;
         var post = this.state.post;
@@ -94,7 +90,7 @@ var SinglePost = React.createClass({
                 <div>
                     <Post post={ post } user={ user } key={ postId } />
                     <div className="comments">
-                        <h2>{ this.pluralize(comments.length, 'Comment') }</h2>
+                        <h2>{ pluralize(comments.length, 'Comment') }</h2>
                         { comments }
                     </div>
                 </div>
