@@ -29,7 +29,7 @@ var Login = React.createClass({
         this.refs.password.getDOMNode().value = '';
         this.refs.submit.getDOMNode().disabled = false;
         this.setState({
-            submitted: false,
+            submitted: false
         });
     },
 

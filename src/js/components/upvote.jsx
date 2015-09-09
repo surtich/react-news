@@ -5,6 +5,13 @@ var cx = require('classnames');
 
 var Upvote = React.createClass({
 
+    propTypes: {
+        user: React.PropTypes.object,
+        itemId: React.PropTypes.string,
+        upvotes: React.PropTypes.number,
+        upvoteActions: React.PropTypes.object
+    },
+
     getInitialState: function() {
         return {
             upvoted: false
@@ -13,9 +20,7 @@ var Upvote = React.createClass({
 
     componentDidMount: function() {
         var upvoted = this.props.user.profile.upvoted;
-        this.setState({
-            upvoted: upvoted ? upvoted[this.props.itemId] : false
-        });
+        this.setState({ upvoted: upvoted ? upvoted[this.props.itemId] : false }); // eslint-disable-line react/no-did-mount-set-state
     },
 
     componentWillReceiveProps: function(nextProps) {

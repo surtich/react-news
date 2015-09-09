@@ -7,10 +7,15 @@ var Link = require('react-router').Link;
 
 var Post = React.createClass({
 
+    propTypes: {
+        user: React.PropTypes.object,
+        post: React.PropTypes.object
+    },
+
     mixins: [
         require('../mixins/pluralize'),
-    	require('../mixins/abbreviateNumber'),
-    	require('../mixins/hostnameFromUrl'),
+        require('../mixins/abbreviateNumber'),
+        require('../mixins/hostnameFromUrl'),
         require('../mixins/timeAgo')
     ],
 
@@ -37,7 +42,7 @@ var Post = React.createClass({
         }
 
         // add delete option if creator is logged in
-        if (user.isLoggedIn && user.uid === post.creatorUID) {   
+        if (user.isLoggedIn && user.uid === post.creatorUID) {
             deleteOption = (
                 <span className="delete post-info-item">
                     <a onClick={ actions.deletePost.bind(this, post.id) }>delete</a>
@@ -77,7 +82,7 @@ var Post = React.createClass({
             </div>
         );
     }
-    
+
 });
 
 module.exports = Post;

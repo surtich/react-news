@@ -5,13 +5,13 @@ var actions = require('../actions/actions');
 var loginStore = require('../stores/loginStore');
 var userStore = require('../stores/userStore');
 
-var Spinner    = require('../components/spinner');
+var Spinner = require('../components/spinner');
 
 var Register = React.createClass({
 
     mixins: [
         Reflux.listenTo(loginStore, 'onErrorMessage'),
-        Reflux.listenTo(userStore, 'resetForm'),
+        Reflux.listenTo(userStore, 'resetForm')
     ],
 
     getInitialState: function() {
@@ -47,7 +47,7 @@ var Register = React.createClass({
 
     resetForm: function() {
         this.setState({
-            submitted: false,
+            submitted: false
         });
         this.refs.username.getDOMNode().value = '';
         this.refs.email.getDOMNode().value = '';

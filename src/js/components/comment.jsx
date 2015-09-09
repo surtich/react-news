@@ -7,6 +7,12 @@ var Upvote = require('./upvote');
 
 var Comment = React.createClass({
 
+    propTypes: {
+        user: React.PropTypes.object,
+        comment: React.PropTypes.object,
+        showPostTitle: React.PropTypes.bool
+    },
+
     mixins: [
         require('../mixins/abbreviateNumber'),
         require('../mixins/timeAgo')
@@ -46,22 +52,22 @@ var Comment = React.createClass({
                     { comment.text }
                 </div>
                 <div className="comment-info">
-		            <div className="posted-by float-left">
-                        <Upvote
-                            upvoteActions={ upvoteActions }
-                            user={ user }
-                            itemId={ comment.id }
-                            upvotes={ comment.upvotes ? this.abbreviateNumber(comment.upvotes) : 0 } />
-                        <span className="post-info-item">
-                            <Link to="profile" params={{ username: comment.creator }}>{ comment.creator }</Link>
-                        </span>
-                        <span className="post-info-item">
-                            { this.timeAgo(comment.time) }
-                        </span>
-                        { postLink }
-                        { deleteOption }
-		            </div>
-	            </div>
+                        <div className="posted-by float-left">
+                            <Upvote
+                                upvoteActions={ upvoteActions }
+                                user={ user }
+                                itemId={ comment.id }
+                                upvotes={ comment.upvotes ? this.abbreviateNumber(comment.upvotes) : 0 } />
+                            <span className="post-info-item">
+                                <Link to="profile" params={{ username: comment.creator }}>{ comment.creator }</Link>
+                            </span>
+                            <span className="post-info-item">
+                                { this.timeAgo(comment.time) }
+                            </span>
+                            { postLink }
+                            { deleteOption }
+                        </div>
+                </div>
             </div>
         );
     }

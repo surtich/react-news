@@ -41,7 +41,7 @@ var userStore = Reflux.createStore({
 
     getUserId: function(username) {
         // returns userId given username
-        var defer = $.Deferred();
+        var defer = $.Deferred(); // eslint-disable-line new-cap
         usersRef.orderByChild('username').equalTo(username).once('value', function(user) {
             var userId = Object.keys(user.val())[0];
             defer.resolve(userId);
@@ -52,23 +52,7 @@ var userStore = Reflux.createStore({
     onLogoutCompleted: function() {
         this.user = defaultUser;
         this.trigger(this.user);
-    },
-
+    }
 });
 
 module.exports = userStore;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

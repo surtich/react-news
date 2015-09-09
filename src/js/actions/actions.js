@@ -56,7 +56,7 @@ actions.register.listen(function(username, loginData) {
 
     function checkForUsername(name) {
         // checks if username is taken
-        var defer = $.Deferred();
+        var defer = $.Deferred();  //eslint-disable-line new-cap
         usersRef.orderByChild('username').equalTo(name).once('value', function(user) {
             defer.resolve(!!user.val());
         });
@@ -100,8 +100,12 @@ actions.login.listen(function(user, username) {
                 var email = authData.password.email;
                 actions.createProfile(userId, username, email);
             } else {
+                // returning user
+                usersRef.child(userId).on('value', function(profile) {
+                    actions.updateProfile(userId, profile.val());
+                });
             }
-        } 
+        }
     });
 });
 
@@ -111,7 +115,7 @@ actions.createProfile.listen(function(uid, username, email) {
         username: username,
         md5hash: md5hash,
         upvoted: {
-            "empty_key": "do not delete" // <- Avoid Firebase removes empty objects
+            'empty_key': 'do not delete' // <- Avoid Firebase removes empty objects
         }
     };
     usersRef.child(uid).set(profile, function(error) {
@@ -165,8 +169,8 @@ actions.deletePost.preEmit = function(postId) {
     .endAt(postId)
     .once('value', function(comments) {
         comments.forEach(function(comment) {
-            comment.ref().remove()
-        })
+            comment.ref().remove();
+        });
     });
 };
 

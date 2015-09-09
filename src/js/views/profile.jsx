@@ -14,18 +14,15 @@ var Comment = require('../components/comment');
 
 var Profile = React.createClass({
 
+    propTypes: {
+        user: React.PropTypes.object,
+        params: React.PropTypes.object
+    },
+
     mixins: [
         require('react-router').Navigation,
         Reflux.listenTo(profileStore, 'onLoaded')
     ],
-
-    getInitialState: function() {
-        return {
-        	profileData: profileStore.getDefaultData(),
-        	isLoading: true
-        };
-    },
-
     statics: {
 
         willTransitionTo: function(transition, params, query, callback) {
@@ -42,14 +39,22 @@ var Profile = React.createClass({
                 isLoading: true
             });
         }
-        
+
     },
 
+    getInitialState: function() {
+        return {
+            profileData: profileStore.getDefaultData(),
+            isLoading: true
+        };
+    },
+
+
     onLoaded: function(profileData) {
-    	this.setState({
-    		profileData: profileData,
-    		isLoading: false
-    	});
+        this.setState({
+            profileData: profileData,
+            isLoading: false
+        });
     },
 
     logout: function(e) {
@@ -60,7 +65,7 @@ var Profile = React.createClass({
 
     render: function() {
         var user = this.props.user;
-    	var profileData = this.state.profileData;
+        var profileData = this.state.profileData;
         var posts = profileData.posts;
         var comments = profileData.comments;
 
@@ -85,7 +90,7 @@ var Profile = React.createClass({
                 return <Comment comment={ comment } user={ user } key={ comment.id } showPostTitle={ true } />;
             });
         }
-    	
+
         return (
             <div className="content full-width">
                 {
@@ -95,7 +100,7 @@ var Profile = React.createClass({
                         </div>
                     )
                 }
-	            <h1>{ this.props.params.username + '\'s' } Profile</h1>
+                <h1>{ this.props.params.username + '\'s' } Profile</h1>
                 <div className="user-posts">
                     { postHeader }
                     { postList }

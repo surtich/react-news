@@ -1,3 +1,4 @@
+/* eslint-disable no-multi-spaces */
 var Reflux      = require('reflux');
 var singleStore = require('../stores/singleStore');
 var actions     = require('../actions/actions');
@@ -5,8 +6,14 @@ var Spinner     = require('../components/spinner');
 var Post        = require('../components/post');
 var Router      = require('react-router');
 var Comment     = require('../components/comment');
+/* eslint-enable no-multi-spaces */
 
 var SinglePost = React.createClass({
+
+    propTypes: {
+        user: React.PropTypes.object,
+        params: React.PropTypes.object
+    },
 
     mixins: [
         require('../mixins/pluralize'),
@@ -14,14 +21,6 @@ var SinglePost = React.createClass({
         Router.State,
         Reflux.listenTo(singleStore, 'onUpdate')
     ],
-
-    getInitialState: function() {
-        return {
-            post: false,
-            comments: [],
-            loading: true
-        };
-    },
 
     statics: {
 
@@ -33,8 +32,16 @@ var SinglePost = React.createClass({
         willTransitionFrom: function(transition, component) {
             actions.stopListeningToPost(component.state.post.id);
         }
-        
+
     },
+
+    getInitialState: function() {
+            return {
+                post: false,
+                comments: [],
+                loading: true
+            };
+        },
 
     onUpdate: function(postData) {
         if (postData.post.isDeleted === true) {

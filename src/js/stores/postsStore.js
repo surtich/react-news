@@ -21,7 +21,7 @@ var postsStore = Reflux.createStore({
                 'newest': 'time',
                 'upvotes': 'upvotes',
                 'comments': 'commentCount'
-            },
+            }
         };
     },
 
@@ -50,7 +50,7 @@ var postsStore = Reflux.createStore({
         });
 
         // if extra post doesn't exist, indicate that there are no more posts
-        this.nextPage = (posts.length === endAt + 1);        
+        this.nextPage = (posts.length === endAt + 1);
         // slice off extra post
         this.posts = posts.slice(0, endAt);
 
@@ -78,5 +78,3 @@ var postsStore = Reflux.createStore({
 });
 
 module.exports = postsStore;
-
-

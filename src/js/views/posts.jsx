@@ -10,6 +10,9 @@ var Post       = require('../components/post');
 /* eslint-enable */
 
 var Posts = React.createClass({
+    propTypes: {
+        user: React.PropTypes.object
+    },
 
     mixins: [
         Router.Navigation,
@@ -25,12 +28,11 @@ var Posts = React.createClass({
         willTransitionFrom: function() {
             actions.stopListeningToPosts();
         }
-        
     },
 
     getInitialState: function() {
         var postsData = postsStore.getDefaultData();
-        
+
         return {
             loading: true,
             posts: postsData.posts,
@@ -57,9 +59,8 @@ var Posts = React.createClass({
     updateSortBy: function(e) {
         e.preventDefault();
         var currentPage = this.state.currentPage || 1;
-        
-        actions.setSortBy(this.refs.sortBy.getDOMNode().value);
 
+        actions.setSortBy(this.refs.sortBy.getDOMNode().value);
         this.setState({
             loading: true
         });
@@ -82,7 +83,7 @@ var Posts = React.createClass({
         var user = this.props.user;
 
         posts = posts.map(function(post) {
-            return <Post post={ post } user={ user } key={ post.id } />; 
+            return <Post post={ post } user={ user } key={ post.id } />;
         });
 
         var options = sortValues.map(function(optionText, i) {

@@ -1,6 +1,7 @@
 var Reflux = require('reflux');
 
 var config = require('../../util/config');
+var Firebase = require('firebase');
 var ref = new Firebase(config.db.firebase);
 var commentsRef = ref.child('comments'),
     postsRef = ref.child('posts');
